@@ -113,37 +113,65 @@ export const getWeatherBackground = (condition: WeatherCondition, sunsetTime?: n
     (now.getTime() / 1000 > sunsetTime || now.getTime() / 1000 < sunriseTime) : 
     (condition.includes('night'));
 
-  // Basic backgrounds by condition
-  if (isNight) {
-    return 'bg-gradient-to-b from-weather-night to-weather-night/80';
-  }
-  
+  // Enhanced backgrounds by condition and time of day
   if (condition.includes('clear')) {
-    return 'bg-gradient-to-b from-weather-clear to-sky-300';
+    return isNight 
+      ? 'bg-gradient-to-b from-indigo-900 to-blue-950' // Clear night - dark blue
+      : 'bg-gradient-to-b from-sky-400 to-blue-300';   // Clear day - light blue
   }
   
-  if (condition.includes('cloud')) {
-    return 'bg-gradient-to-b from-weather-cloudy to-sky-200';
+  if (condition.includes('partly-cloudy')) {
+    return isNight
+      ? 'bg-gradient-to-b from-slate-900 to-blue-900' // Partly cloudy night
+      : 'bg-gradient-to-b from-blue-400 to-sky-300';  // Partly cloudy day
+  }
+  
+  if (condition === 'cloudy') {
+    return isNight
+      ? 'bg-gradient-to-b from-gray-900 to-slate-800' // Cloudy night
+      : 'bg-gradient-to-b from-gray-400 to-slate-500'; // Cloudy day
   }
   
   if (condition.includes('rain') || condition.includes('drizzle') || condition.includes('shower')) {
-    return 'bg-gradient-to-b from-weather-rain to-slate-400';
+    return isNight
+      ? 'bg-gradient-to-b from-slate-900 to-gray-800' // Rainy night
+      : 'bg-gradient-to-b from-slate-500 to-slate-600'; // Rainy day
   }
   
   if (condition.includes('thunder')) {
-    return 'bg-gradient-to-b from-weather-thunderstorm to-slate-600';
+    return isNight
+      ? 'bg-gradient-to-b from-slate-950 to-gray-900' // Thunderstorm night
+      : 'bg-gradient-to-b from-gray-700 to-slate-800'; // Thunderstorm day
   }
   
   if (condition.includes('snow') || condition.includes('sleet') || condition.includes('hail')) {
-    return 'bg-gradient-to-b from-weather-snow to-slate-200';
+    return isNight
+      ? 'bg-gradient-to-b from-slate-800 to-blue-900' // Snowy night
+      : 'bg-gradient-to-b from-gray-100 to-blue-100'; // Snowy day
   }
   
   if (condition.includes('mist') || condition.includes('fog') || condition.includes('haze') || condition.includes('smoke')) {
-    return 'bg-gradient-to-b from-weather-mist to-slate-300';
+    return isNight
+      ? 'bg-gradient-to-b from-gray-700 to-slate-900' // Foggy night
+      : 'bg-gradient-to-b from-gray-300 to-slate-400'; // Foggy day
+  }
+  
+  if (condition.includes('dust') || condition.includes('sand')) {
+    return isNight
+      ? 'bg-gradient-to-b from-amber-900 to-stone-900' // Dusty night
+      : 'bg-gradient-to-b from-amber-200 to-yellow-100'; // Dusty day
+  }
+  
+  if (condition.includes('tornado')) {
+    return isNight
+      ? 'bg-gradient-to-b from-slate-900 to-gray-950' // Tornado night
+      : 'bg-gradient-to-b from-slate-700 to-gray-800'; // Tornado day
   }
   
   // Default, clear sky
-  return 'bg-gradient-to-b from-weather-clear to-sky-300';
+  return isNight
+    ? 'bg-gradient-to-b from-indigo-900 to-blue-950' // Default night
+    : 'bg-gradient-to-b from-sky-400 to-blue-300';   // Default day
 };
 
 // Map conditions to text describing the weather

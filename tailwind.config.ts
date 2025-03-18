@@ -75,6 +75,8 @@ export default {
 					thunderstorm: '#485563',
 					mist: '#c9d6e0',
 					night: '#0a1a33',
+					dust: '#c2b280',
+					tornado: '#4a4a4a',
 				}
 			},
 			borderRadius: {
@@ -119,6 +121,11 @@ export default {
 					from: { transform: 'scale(0.95)', opacity: '0' },
 					to: { transform: 'scale(1)', opacity: '1' },
 				},
+				'lightning-flash': {
+					'0%, 100%': { opacity: '0' },
+					'10%, 30%': { opacity: '0.9' },
+					'15%, 25%': { opacity: '0.1' },
+				},
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
@@ -130,6 +137,7 @@ export default {
 				'float': 'float 6s ease-in-out infinite',
 				'pulse-slow': 'pulse-slow 4s ease-in-out infinite',
 				'scale-in': 'scale-in 0.3s ease-out',
+				'lightning': 'lightning-flash 5s ease-out infinite',
 			},
 			backdropBlur: {
 				xs: '2px',
