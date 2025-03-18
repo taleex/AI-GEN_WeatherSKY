@@ -4,16 +4,26 @@ import { WeatherData } from '@/lib/weatherAPI';
 import { formatTemperature, formatTime, formatWind, capitalizeWords } from '@/utils/formatters';
 import { mapConditionCode, getConditionText } from '@/utils/iconMap';
 import ForecastCard from './ForecastCard';
-import WeatherIcon from './WeatherIcon';
-import { Droplets, Thermometer, Compass, Sunrise, Sunset, ArrowDown, Wind } from 'lucide-react';
+import WeatherSVGIcon from './WeatherSVGIcons';
+import { Droplets, Thermometer, Wind, Sunrise, Sunset, ArrowDown } from 'lucide-react';
 import { motion } from 'framer-motion';
+import LocationSearch from './LocationSearch';
 
 interface WeatherDisplayProps {
   data: WeatherData;
   isLoading: boolean;
+  onSearch: (query: string) => Promise<any[]>;
+  onSelectLocation: (location: any) => void;
+  onGetCurrentLocation: () => void;
 }
 
-const WeatherDisplay: React.FC<WeatherDisplayProps> = ({ data, isLoading }) => {
+const WeatherDisplay: React.FC<WeatherDisplayProps> = ({ 
+  data, 
+  isLoading,
+  onSearch,
+  onSelectLocation,
+  onGetCurrentLocation
+}) => {
   if (isLoading || !data) {
     return (
       <div className="weather-container h-full flex items-center justify-center">
@@ -49,14 +59,22 @@ const WeatherDisplay: React.FC<WeatherDisplayProps> = ({ data, isLoading }) => {
       >
         <div className="flex flex-col md:flex-row md:justify-between items-center mb-6">
           <motion.div 
-            className="flex flex-col items-center md:items-start mb-4 md:mb-0"
+            className="flex items-center mb-4 md:mb-0"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.2, duration: 0.5 }}
           >
-            <h1 className="text-2xl md:text-3xl font-display font-medium text-white">
-              {location.name}
-            </h1>
+            <div className="flex flex-col md:flex-row items-center md:items-start">
+              <h1 className="text-2xl md:text-3xl font-display font-medium text-white mr-3">
+                {location.name}
+              </h1>
+              <LocationSearch 
+                onSearch={onSearch}
+                onSelectLocation={onSelectLocation}
+                onGetCurrentLocation={onGetCurrentLocation}
+                isInHeader={true}
+              />
+            </div>
             <p className="text-white/80 text-sm mt-1">
               {formatTime(current.dt, 'full')}
             </p>
@@ -84,7 +102,7 @@ const WeatherDisplay: React.FC<WeatherDisplayProps> = ({ data, isLoading }) => {
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.4, duration: 0.5 }}
           >
-            <WeatherIcon condition={weatherCondition} size="xl" className="mr-4" />
+            <WeatherSVGIcon condition={weatherCondition} size="xl" className="mr-4" />
             <div>
               <h2 className="text-white text-xl font-medium">{conditionText}</h2>
               <p className="text-white/80 text-sm">
@@ -123,7 +141,7 @@ const WeatherDisplay: React.FC<WeatherDisplayProps> = ({ data, isLoading }) => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5, duration: 0.5 }}
         >
-          <div className="flex flex-col items-center sm:items-start bg-white/10 rounded-lg p-3">
+          <div className="flex flex-col items-center sm:items-start glass-panel rounded-lg p-3">
             <div className="flex items-center text-blue-200 mb-1">
               <Wind className="w-4 h-4 mr-1" />
               <span className="text-xs uppercase">Wind</span>
@@ -133,7 +151,7 @@ const WeatherDisplay: React.FC<WeatherDisplayProps> = ({ data, isLoading }) => {
             </p>
           </div>
 
-          <div className="flex flex-col items-center sm:items-start bg-white/10 rounded-lg p-3">
+          <div className="flex flex-col items-center sm:items-start glass-panel rounded-lg p-3">
             <div className="flex items-center text-blue-200 mb-1">
               <Droplets className="w-4 h-4 mr-1" />
               <span className="text-xs uppercase">Humidity</span>
@@ -141,7 +159,7 @@ const WeatherDisplay: React.FC<WeatherDisplayProps> = ({ data, isLoading }) => {
             <p className="text-white text-sm">{current.humidity}%</p>
           </div>
 
-          <div className="flex flex-col items-center sm:items-start bg-white/10 rounded-lg p-3">
+          <div className="flex flex-col items-center sm:items-start glass-panel rounded-lg p-3">
             <div className="flex items-center text-blue-200 mb-1">
               <Sunrise className="w-4 h-4 mr-1" />
               <span className="text-xs uppercase">Sunrise</span>
@@ -149,7 +167,7 @@ const WeatherDisplay: React.FC<WeatherDisplayProps> = ({ data, isLoading }) => {
             <p className="text-white text-sm">{formatTime(current.sunrise)}</p>
           </div>
 
-          <div className="flex flex-col items-center sm:items-start bg-white/10 rounded-lg p-3">
+          <div className="flex flex-col items-center sm:items-start glass-panel rounded-lg p-3">
             <div className="flex items-center text-blue-200 mb-1">
               <Sunset className="w-4 h-4 mr-1" />
               <span className="text-xs uppercase">Sunset</span>

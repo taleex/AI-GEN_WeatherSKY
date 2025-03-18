@@ -9,12 +9,14 @@ interface LocationSearchProps {
   onSearch: (query: string) => Promise<WeatherLocation[]>;
   onSelectLocation: (location: WeatherLocation) => void;
   onGetCurrentLocation: () => void;
+  isInHeader?: boolean;
 }
 
 const LocationSearch: React.FC<LocationSearchProps> = ({
   onSearch,
   onSelectLocation,
   onGetCurrentLocation,
+  isInHeader = false
 }) => {
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<WeatherLocation[]>([]);
@@ -92,6 +94,10 @@ const LocationSearch: React.FC<LocationSearchProps> = ({
     }
   }, [isExpanded]);
 
+  const buttonClasses = isInHeader 
+    ? "flex items-center justify-center w-10 h-10 rounded-full bg-white/10 backdrop-blur-sm text-white hover:bg-white/20 transition-all"
+    : "flex items-center justify-center w-10 h-10 rounded-full bg-white/20 backdrop-blur-md text-white hover:bg-white/30 transition-all";
+
   return (
     <motion.div 
       ref={searchRef}
@@ -102,7 +108,7 @@ const LocationSearch: React.FC<LocationSearchProps> = ({
     >
       {!isExpanded ? (
         <motion.button
-          className="flex items-center justify-center w-10 h-10 rounded-full bg-white/20 backdrop-blur-md text-white hover:bg-white/30 transition-all"
+          className={buttonClasses}
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
           onClick={() => setIsExpanded(true)}
@@ -111,10 +117,11 @@ const LocationSearch: React.FC<LocationSearchProps> = ({
         </motion.button>
       ) : (
         <motion.div
-          className="w-72 bg-white/20 backdrop-blur-md rounded-xl overflow-hidden shadow-lg border border-white/30"
-          initial={{ width: 40, height: 40, borderRadius: 20 }}
-          animate={{ width: 288, height: "auto", borderRadius: 12 }}
+          className="absolute top-0 right-0 w-72 bg-white/20 backdrop-blur-xl rounded-xl overflow-hidden shadow-lg border border-white/30"
+          initial={{ width: 40, height: 40, borderRadius: 20, opacity: 0.9 }}
+          animate={{ width: 288, height: "auto", borderRadius: 12, opacity: 1 }}
           transition={{ type: "spring", stiffness: 500, damping: 30 }}
+          style={{ zIndex: 200 }}
         >
           <form onSubmit={handleSearchSubmit} className="relative">
             <div className="flex items-center px-3 py-2">

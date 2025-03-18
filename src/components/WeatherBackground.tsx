@@ -20,6 +20,13 @@ const WeatherBackground: React.FC<WeatherBackgroundProps> = ({
   const cloudsControls = useAnimation();
   const starsControls = useAnimation();
   const rainControls = useAnimation();
+  const [cloudEffects, setCloudEffects] = useState<Array<{
+    id: number;
+    x: number;
+    y: number;
+    size: number;
+    opacity: number;
+  }>>([]);
   
   // Determine if it's night time
   const isNight = (() => {
@@ -49,9 +56,25 @@ const WeatherBackground: React.FC<WeatherBackgroundProps> = ({
     // Animate clouds based on mouse position
     if (condition.includes('cloud')) {
       cloudsControls.start({
-        x: (x - 0.5) * 30,
-        y: (y - 0.5) * 15,
+        x: (x - 0.5) * 40,
+        y: (y - 0.5) * 20,
         transition: { duration: 2, ease: "easeOut" }
+      });
+
+      // Spread nearby clouds on mouse movement
+      const cloudEffectsCopy = [...cloudEffects];
+      cloudEffectsCopy.forEach(effect => {
+        const dx = effect.x - e.clientX;
+        const dy = effect.y - e.clientY;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+        if (distance < 150) {
+          const pushFactor = 1 - distance / 150; // Stronger push when closer
+          const element = document.getElementById(`cloud-effect-${effect.id}`);
+          if (element) {
+            element.style.transform = `translate(${dx * pushFactor}px, ${dy * pushFactor}px)`;
+            element.style.transition = 'transform 1s ease-out';
+          }
+        }
       });
     }
     
@@ -67,7 +90,7 @@ const WeatherBackground: React.FC<WeatherBackgroundProps> = ({
     // Animate rain/snow direction slightly based on mouse
     if (condition.includes('rain') || condition.includes('snow')) {
       rainControls.start({
-        x: (x - 0.5) * 10,
+        x: (x - 0.5) * 15,
         transition: { duration: 1 }
       });
     }
@@ -82,28 +105,21 @@ const WeatherBackground: React.FC<WeatherBackgroundProps> = ({
     
     if (condition.includes('cloud') || condition.includes('clear')) {
       // Add a temporary cloud effect at click position
-      const cloud = document.createElement('div');
-      cloud.className = 'absolute bg-white/40 rounded-full blur-2xl pointer-events-none';
-      cloud.style.width = `${Math.random() * 100 + 100}px`;
-      cloud.style.height = `${Math.random() * 50 + 50}px`;
-      cloud.style.left = `${x - 50}px`;
-      cloud.style.top = `${y - 25}px`;
-      cloud.style.opacity = '0';
-      cloud.style.transition = 'all 2s ease-out';
+      const id = Date.now();
+      const size = Math.random() * 100 + 100;
       
-      containerRef.current.appendChild(cloud);
-      
-      // Animate the cloud
-      setTimeout(() => {
-        cloud.style.opacity = '0.7';
-        cloud.style.transform = `translate(${(Math.random() - 0.5) * 100}px, ${(Math.random() - 0.5) * 50}px)`;
-      }, 10);
+      setCloudEffects(prev => [...prev, { 
+        id, 
+        x: e.clientX,
+        y: e.clientY,
+        size,
+        opacity: 0.7
+      }]);
       
       // Remove the cloud after animation
       setTimeout(() => {
-        cloud.style.opacity = '0';
-        setTimeout(() => cloud.remove(), 2000);
-      }, 2000);
+        setCloudEffects(prev => prev.filter(effect => effect.id !== id));
+      }, 5000);
     }
   };
 
@@ -123,6 +139,30 @@ const WeatherBackground: React.FC<WeatherBackgroundProps> = ({
           exit={{ opacity: 0 }}
           transition={{ duration: 1.5 }}
         >
+          {/* Dynamic cloud effects */}
+          {cloudEffects.map(effect => (
+            <motion.div
+              key={effect.id}
+              id={`cloud-effect-${effect.id}`}
+              className="absolute bg-white/40 rounded-full blur-2xl pointer-events-none"
+              style={{
+                width: `${effect.size}px`,
+                height: `${effect.size / 2}px`,
+                left: `${effect.x - effect.size / 2}px`,
+                top: `${effect.y - effect.size / 4}px`,
+                opacity: 0,
+              }}
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ 
+                opacity: [0, effect.opacity, 0],
+                scale: [0.8, 1, 1.2],
+                x: [0, Math.random() * 100 - 50],
+                y: [0, Math.random() * 50 - 25]
+              }}
+              transition={{ duration: 5, ease: "easeOut" }}
+            />
+          ))}
+
           {/* Sun or Moon based on time of day */}
           {condition.includes('clear') && !isNight && (
             <motion.div 

@@ -3,7 +3,6 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Navbar from '@/components/Navbar';
 import WeatherDisplay from '@/components/WeatherDisplay';
-import LocationSearch from '@/components/LocationSearch';
 import WeatherBackground from '@/components/WeatherBackground';
 import { useWeather } from '@/hooks/useWeather';
 import { mapConditionCode } from '@/utils/iconMap';
@@ -69,7 +68,7 @@ const Index = () => {
       />
       
       {/* Semi-transparent overlay for better readability */}
-      <div className="absolute inset-0 bg-black/10 backdrop-blur-xs"></div>
+      <div className="absolute inset-0 bg-black/5 backdrop-blur-xs"></div>
       
       {/* Content layer */}
       <div className="relative z-10 min-h-screen">
@@ -160,16 +159,8 @@ const Index = () => {
               exit={{ opacity: 0 }}
               transition={{ duration: 0.5 }}
             >
-              <div className="flex justify-end px-6 mb-6">
-                <LocationSearch
-                  onSearch={searchLocation}
-                  onSelectLocation={selectLocation}
-                  onGetCurrentLocation={getCurrentLocation}
-                />
-              </div>
-              
               {error && (
-                <div className="px-6">
+                <div className="px-6 mb-4">
                   <Alert variant="destructive" className="bg-red-500/20 border-red-500/50 text-white">
                     <AlertCircle className="h-4 w-4" />
                     <AlertTitle>Error</AlertTitle>
@@ -179,7 +170,13 @@ const Index = () => {
               )}
               
               {weatherData && (
-                <WeatherDisplay data={weatherData} isLoading={isLoading} />
+                <WeatherDisplay 
+                  data={weatherData} 
+                  isLoading={isLoading} 
+                  onSearch={searchLocation}
+                  onSelectLocation={selectLocation}
+                  onGetCurrentLocation={getCurrentLocation}
+                />
               )}
             </motion.div>
           )}

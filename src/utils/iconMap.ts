@@ -1,3 +1,4 @@
+
 import { LucideIcon } from "lucide-react";
 import { 
   Sun, Moon, Cloud, CloudRain, CloudSnow, CloudFog, CloudLightning,
@@ -112,53 +113,53 @@ export const getWeatherBackground = (condition: WeatherCondition, sunsetTime?: n
     (now.getTime() / 1000 > sunsetTime || now.getTime() / 1000 < sunriseTime) : 
     (condition.includes('night'));
 
-  // Enhanced backgrounds by condition and time of day
+  // Enhanced backgrounds by condition and time of day using mint and steel blue colors
   if (condition.includes('clear')) {
     return isNight 
-      ? 'bg-gradient-to-b from-[#0a1a33] to-[#172554]' // Clear night - deep blue
-      : 'bg-gradient-to-b from-[#38bdf8] to-[#0284c7]';   // Clear day - sky blue
+      ? 'bg-gradient-to-b from-[#1e2d4a] to-[#0a1e3d]' // Clear night - deep blue
+      : 'bg-gradient-to-b from-[#a5c7e2] to-[#607ebc]';   // Clear day - mint to steel blue
   }
   
   if (condition.includes('partly-cloudy')) {
     return isNight
-      ? 'bg-gradient-to-b from-[#1e293b] to-[#0f172a]' // Partly cloudy night
-      : 'bg-gradient-to-b from-[#60a5fa] to-[#3b82f6]';  // Partly cloudy day
+      ? 'bg-gradient-to-b from-[#2c3e57] to-[#1e293b]' // Partly cloudy night
+      : 'bg-gradient-to-b from-[#b0d4df] to-[#8fa8c9]';  // Partly cloudy day
   }
   
   if (condition === 'cloudy') {
     return isNight
-      ? 'bg-gradient-to-b from-[#334155] to-[#1e293b]' // Cloudy night
-      : 'bg-gradient-to-b from-[#94a3b8] to-[#64748b]'; // Cloudy day
+      ? 'bg-gradient-to-b from-[#3a4756] to-[#2c3e50]' // Cloudy night
+      : 'bg-gradient-to-b from-[#cfd9df] to-[#9bafc4]'; // Cloudy day
   }
   
   if (condition.includes('rain') || condition.includes('drizzle') || condition.includes('shower')) {
     return isNight
-      ? 'bg-gradient-to-b from-[#334155] to-[#1e293b]' // Rainy night
-      : 'bg-gradient-to-b from-[#64748b] to-[#475569]'; // Rainy day
+      ? 'bg-gradient-to-b from-[#374151] to-[#1e293b]' // Rainy night
+      : 'bg-gradient-to-b from-[#a7b9c0] to-[#607890]'; // Rainy day
   }
   
   if (condition.includes('thunder')) {
     return isNight
-      ? 'bg-gradient-to-b from-[#1e293b] to-[#0f172a]' // Thunderstorm night
-      : 'bg-gradient-to-b from-[#475569] to-[#334155]'; // Thunderstorm day
+      ? 'bg-gradient-to-b from-[#1f2937] to-[#111827]' // Thunderstorm night
+      : 'bg-gradient-to-b from-[#6b7280] to-[#4b5563]'; // Thunderstorm day
   }
   
   if (condition.includes('snow') || condition.includes('sleet') || condition.includes('hail')) {
     return isNight
-      ? 'bg-gradient-to-b from-[#334155] to-[#1e293b]' // Snowy night
-      : 'bg-gradient-to-b from-[#e2e8f0] to-[#cbd5e1]'; // Snowy day
+      ? 'bg-gradient-to-b from-[#374151] to-[#1f2937]' // Snowy night
+      : 'bg-gradient-to-b from-[#d1e0d7] to-[#cfd8dc]'; // Snowy day
   }
   
   if (condition.includes('mist') || condition.includes('fog') || condition.includes('haze') || condition.includes('smoke')) {
     return isNight
-      ? 'bg-gradient-to-b from-[#475569] to-[#334155]' // Foggy night
-      : 'bg-gradient-to-b from-[#cbd5e1] to-[#94a3b8]'; // Foggy day
+      ? 'bg-gradient-to-b from-[#4a5568] to-[#2d3748]' // Foggy night
+      : 'bg-gradient-to-b from-[#b8c7cb] to-[#8fa1a6]'; // Foggy day
   }
   
   if (condition.includes('dust') || condition.includes('sand')) {
     return isNight
       ? 'bg-gradient-to-b from-[#78350f] to-[#451a03]' // Dusty night
-      : 'bg-gradient-to-b from-[#d4a276] to-[#b45309]'; // Dusty day
+      : 'bg-gradient-to-b from-[#d4be98] to-[#b08968]'; // Dusty day
   }
   
   if (condition.includes('tornado')) {
@@ -167,10 +168,10 @@ export const getWeatherBackground = (condition: WeatherCondition, sunsetTime?: n
       : 'bg-gradient-to-b from-[#475569] to-[#334155]'; // Tornado day
   }
   
-  // Default, clear sky
+  // Default, clear sky with mint/blue theme
   return isNight
-    ? 'bg-gradient-to-b from-[#0a1a33] to-[#172554]' // Default night
-    : 'bg-gradient-to-b from-[#38bdf8] to-[#0284c7]';   // Default day
+    ? 'bg-gradient-to-b from-[#1e2d4a] to-[#0a1e3d]' // Default night
+    : 'bg-gradient-to-b from-[#a5c7e2] to-[#607ebc]';   // Default day - mint to steel blue
 };
 
 // Map conditions to text describing the weather
