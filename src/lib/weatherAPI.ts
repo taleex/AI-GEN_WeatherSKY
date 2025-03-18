@@ -71,16 +71,20 @@ export const fetchWeatherByCoords = async (
     
     const currentData = await currentResponse.json();
     
-    // Then, fetch one-call API for forecast
-    const oneCallResponse = await fetch(
-      `https://api.openweathermap.org/data/3.0/onecall?lat=${lat}&lon=${lon}&exclude=minutely,alerts&appid=${apiKey}&units=metric`
+    // Then, fetch 5 day / 3 hour forecast data instead of one-call
+    const forecastResponse = await fetch(
+      `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric`
     );
     
-    if (!oneCallResponse.ok) {
-      throw new Error(`Forecast API Error: ${oneCallResponse.status}`);
+    if (!forecastResponse.ok) {
+      throw new Error(`Forecast API Error: ${forecastResponse.status}`);
     }
     
-    const forecastData = await oneCallResponse.json();
+    const forecastData = await forecastResponse.json();
+    
+    // Process forecast data to get daily data
+    const dailyData = processDailyForecast(forecastData.list);
+    const hourlyData = processHourlyForecast(forecastData.list);
     
     // Format and combine the data
     return {
@@ -102,37 +106,76 @@ export const fetchWeatherByCoords = async (
         weather_code: currentData.weather[0].id,
         weather_description: currentData.weather[0].description,
         clouds: currentData.clouds.all,
-        uvi: forecastData.current.uvi,
+        uvi: 0, // UV index not available in the free tier
         visibility: currentData.visibility,
         sunrise: currentData.sys.sunrise,
         sunset: currentData.sys.sunset,
         dt: currentData.dt,
       },
       forecast: {
-        daily: forecastData.daily.slice(0, 5).map((day: any) => ({
-          dt: day.dt,
-          temp: {
-            day: day.temp.day,
-            min: day.temp.min,
-            max: day.temp.max,
-          },
-          weather_code: day.weather[0].id,
-          weather_description: day.weather[0].description,
-          pop: day.pop,
-        })),
-        hourly: forecastData.hourly.slice(0, 24).map((hour: any) => ({
-          dt: hour.dt,
-          temp: hour.temp,
-          weather_code: hour.weather[0].id,
-          weather_description: hour.weather[0].description,
-          pop: hour.pop,
-        })),
+        daily: dailyData,
+        hourly: hourlyData,
       },
     };
   } catch (error) {
     console.error('Error fetching weather data:', error);
     throw error;
   }
+};
+
+// Process forecast data to get daily forecast
+const processDailyForecast = (forecastList: any[]) => {
+  const dailyMap = new Map();
+  
+  forecastList.forEach(item => {
+    // Get date without time
+    const date = new Date(item.dt * 1000).setHours(0, 0, 0, 0);
+    
+    if (!dailyMap.has(date)) {
+      dailyMap.set(date, {
+        dt: item.dt,
+        temps: [item.main.temp],
+        temp_min: item.main.temp_min,
+        temp_max: item.main.temp_max,
+        weather_code: item.weather[0].id,
+        weather_description: item.weather[0].description,
+        pop: item.pop || 0
+      });
+    } else {
+      const day = dailyMap.get(date);
+      day.temps.push(item.main.temp);
+      day.temp_min = Math.min(day.temp_min, item.main.temp_min);
+      day.temp_max = Math.max(day.temp_max, item.main.temp_max);
+      day.pop = Math.max(day.pop, item.pop || 0);
+    }
+  });
+  
+  // Convert to array and format
+  return Array.from(dailyMap.values())
+    .slice(0, 5)
+    .map(day => ({
+      dt: day.dt,
+      temp: {
+        day: day.temps.reduce((sum: number, temp: number) => sum + temp, 0) / day.temps.length,
+        min: day.temp_min,
+        max: day.temp_max
+      },
+      weather_code: day.weather_code,
+      weather_description: day.weather_description,
+      pop: day.pop
+    }));
+};
+
+// Process forecast data to get hourly forecast
+const processHourlyForecast = (forecastList: any[]) => {
+  // Take only the first 24 hours (8 items, as they are 3 hours apart)
+  return forecastList.slice(0, 8).map(item => ({
+    dt: item.dt,
+    temp: item.main.temp,
+    weather_code: item.weather[0].id,
+    weather_description: item.weather[0].description,
+    pop: item.pop || 0
+  }));
 };
 
 // API call to search for locations

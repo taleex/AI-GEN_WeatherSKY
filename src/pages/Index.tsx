@@ -10,25 +10,45 @@ import { mapConditionCode } from '@/utils/iconMap';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { ArrowRight } from 'lucide-react';
+import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
+import { AlertCircle } from "lucide-react";
 
 const Index = () => {
   const [apiKey, setApiKey] = useState<string>(() => {
     return localStorage.getItem('weatherApiKey') || '';
   });
   const [isSettingApiKey, setIsSettingApiKey] = useState<boolean>(!apiKey);
+  const [keyError, setKeyError] = useState<string | null>(null);
   
   const {
     weatherData,
     isLoading,
+    error,
     getCurrentLocation,
     searchLocation,
     selectLocation,
+    validateApiKey
   } = useWeather({ apiKey });
   
-  const handleApiKeySubmit = (e: React.FormEvent) => {
+  const handleApiKeySubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    localStorage.setItem('weatherApiKey', apiKey);
-    setIsSettingApiKey(false);
+    setKeyError(null);
+    
+    try {
+      // Validate the API key before saving
+      const isValid = await validateApiKey(apiKey);
+      if (isValid) {
+        localStorage.setItem('weatherApiKey', apiKey);
+        setIsSettingApiKey(false);
+      }
+    } catch (error: any) {
+      setKeyError(error.message || 'Invalid API key. Please try again.');
+    }
+  };
+  
+  const handleChangeApiKey = () => {
+    setIsSettingApiKey(true);
+    setKeyError(null);
   };
   
   // Determine the current weather condition
@@ -53,7 +73,17 @@ const Index = () => {
       
       {/* Content layer */}
       <div className="relative z-10 min-h-screen">
-        <Navbar title="Stellar Sky" />
+        <Navbar title="Stellar Sky">
+          {!isSettingApiKey && (
+            <Button 
+              variant="ghost" 
+              className="text-xs text-white/70 hover:text-white hover:bg-white/10"
+              onClick={handleChangeApiKey}
+            >
+              Change API Key
+            </Button>
+          )}
+        </Navbar>
         
         <AnimatePresence mode="wait">
           {isSettingApiKey ? (
@@ -74,7 +104,7 @@ const Index = () => {
                 <h2 className="text-2xl font-display font-medium text-white mb-6 text-center">
                   Welcome to Stellar Sky
                 </h2>
-                <p className="text-white/80 mb-8 text-center">
+                <p className="text-white/80 mb-6 text-center">
                   Please enter your OpenWeatherMap API key to get started. 
                   You can get a free API key by signing up at 
                   <a 
@@ -86,6 +116,14 @@ const Index = () => {
                     openweathermap.org
                   </a>
                 </p>
+                
+                {keyError && (
+                  <Alert variant="destructive" className="mb-4 bg-red-500/20 border-red-500/50 text-white">
+                    <AlertCircle className="h-4 w-4" />
+                    <AlertTitle>Error</AlertTitle>
+                    <AlertDescription>{keyError}</AlertDescription>
+                  </Alert>
+                )}
                 
                 <form onSubmit={handleApiKeySubmit} className="space-y-6">
                   <div className="space-y-2">
@@ -129,6 +167,16 @@ const Index = () => {
                   onGetCurrentLocation={getCurrentLocation}
                 />
               </div>
+              
+              {error && (
+                <div className="px-6">
+                  <Alert variant="destructive" className="bg-red-500/20 border-red-500/50 text-white">
+                    <AlertCircle className="h-4 w-4" />
+                    <AlertTitle>Error</AlertTitle>
+                    <AlertDescription>{error}</AlertDescription>
+                  </Alert>
+                </div>
+              )}
               
               {weatherData && (
                 <WeatherDisplay data={weatherData} isLoading={isLoading} />

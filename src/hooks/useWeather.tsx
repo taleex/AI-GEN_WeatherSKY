@@ -1,7 +1,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { fetchWeatherByCoords, searchLocations, WeatherData, WeatherLocation } from '../lib/weatherAPI';
-import { toast } from "@/components/ui/use-toast";
+import { toast } from "@/hooks/use-toast";
 
 interface UseWeatherProps {
   apiKey: string;
@@ -12,6 +12,30 @@ export const useWeather = ({ apiKey }: UseWeatherProps) => {
   const [location, setLocation] = useState<WeatherLocation | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
+  
+  // Function to validate API key
+  const validateApiKey = useCallback(async (key: string): Promise<boolean> => {
+    if (!key) {
+      throw new Error('API key is required');
+    }
+    
+    try {
+      // Test the API key with a simple request
+      const response = await fetch(
+        `https://api.openweathermap.org/data/2.5/weather?q=London&appid=${key}`
+      );
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || `API Error: ${response.status}`);
+      }
+      
+      return true;
+    } catch (err: any) {
+      console.error('API key validation error:', err);
+      throw err;
+    }
+  }, []);
   
   // Function to fetch weather data for a location
   const fetchWeather = useCallback(async (lat: number, lon: number) => {
@@ -105,7 +129,7 @@ export const useWeather = ({ apiKey }: UseWeatherProps) => {
     fetchWeather(loc.lat, loc.lon);
   }, [fetchWeather]);
   
-  // Initially try to get user's location
+  // Initially try to get user's location if API key is present
   useEffect(() => {
     if (apiKey) {
       getCurrentLocation();
@@ -121,5 +145,6 @@ export const useWeather = ({ apiKey }: UseWeatherProps) => {
     getCurrentLocation,
     searchLocation,
     selectLocation,
+    validateApiKey
   };
 };
