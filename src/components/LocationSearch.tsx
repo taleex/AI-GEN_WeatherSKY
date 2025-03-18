@@ -95,7 +95,7 @@ const LocationSearch: React.FC<LocationSearchProps> = ({
   return (
     <motion.div 
       ref={searchRef}
-      className="relative z-10"
+      className="relative z-[100]"
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.3, duration: 0.5 }}
@@ -111,7 +111,7 @@ const LocationSearch: React.FC<LocationSearchProps> = ({
         </motion.button>
       ) : (
         <motion.div
-          className="w-72 bg-white/20 backdrop-blur-md rounded-xl overflow-hidden"
+          className="w-72 bg-white/20 backdrop-blur-md rounded-xl overflow-hidden shadow-lg border border-white/30"
           initial={{ width: 40, height: 40, borderRadius: 20 }}
           animate={{ width: 288, height: "auto", borderRadius: 12 }}
           transition={{ type: "spring", stiffness: 500, damping: 30 }}

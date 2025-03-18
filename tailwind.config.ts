@@ -69,14 +69,14 @@ export default {
 				},
 				weather: {
 					clear: '#48b0e0',
-					cloudy: '#b0c4de',
-					rain: '#6a7b95',
+					cloudy: '#8A898C',
+					rain: '#4a5568',
 					snow: '#e5f1f8',
-					thunderstorm: '#485563',
-					mist: '#c9d6e0',
+					thunderstorm: '#2D3748',
+					mist: '#9F9EA1',
 					night: '#0a1a33',
-					dust: '#c2b280',
-					tornado: '#4a4a4a',
+					dust: '#C8C8C9',
+					tornado: '#403E43',
 				}
 			},
 			borderRadius: {

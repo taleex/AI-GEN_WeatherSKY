@@ -1,4 +1,3 @@
-
 import { LucideIcon } from "lucide-react";
 import { 
   Sun, Moon, Cloud, CloudRain, CloudSnow, CloudFog, CloudLightning,
@@ -116,62 +115,62 @@ export const getWeatherBackground = (condition: WeatherCondition, sunsetTime?: n
   // Enhanced backgrounds by condition and time of day
   if (condition.includes('clear')) {
     return isNight 
-      ? 'bg-gradient-to-b from-indigo-900 to-blue-950' // Clear night - dark blue
-      : 'bg-gradient-to-b from-sky-400 to-blue-300';   // Clear day - light blue
+      ? 'bg-gradient-to-b from-[#0a1a33] to-[#172554]' // Clear night - deep blue
+      : 'bg-gradient-to-b from-[#38bdf8] to-[#0284c7]';   // Clear day - sky blue
   }
   
   if (condition.includes('partly-cloudy')) {
     return isNight
-      ? 'bg-gradient-to-b from-slate-900 to-blue-900' // Partly cloudy night
-      : 'bg-gradient-to-b from-blue-400 to-sky-300';  // Partly cloudy day
+      ? 'bg-gradient-to-b from-[#1e293b] to-[#0f172a]' // Partly cloudy night
+      : 'bg-gradient-to-b from-[#60a5fa] to-[#3b82f6]';  // Partly cloudy day
   }
   
   if (condition === 'cloudy') {
     return isNight
-      ? 'bg-gradient-to-b from-gray-900 to-slate-800' // Cloudy night
-      : 'bg-gradient-to-b from-gray-400 to-slate-500'; // Cloudy day
+      ? 'bg-gradient-to-b from-[#334155] to-[#1e293b]' // Cloudy night
+      : 'bg-gradient-to-b from-[#94a3b8] to-[#64748b]'; // Cloudy day
   }
   
   if (condition.includes('rain') || condition.includes('drizzle') || condition.includes('shower')) {
     return isNight
-      ? 'bg-gradient-to-b from-slate-900 to-gray-800' // Rainy night
-      : 'bg-gradient-to-b from-slate-500 to-slate-600'; // Rainy day
+      ? 'bg-gradient-to-b from-[#334155] to-[#1e293b]' // Rainy night
+      : 'bg-gradient-to-b from-[#64748b] to-[#475569]'; // Rainy day
   }
   
   if (condition.includes('thunder')) {
     return isNight
-      ? 'bg-gradient-to-b from-slate-950 to-gray-900' // Thunderstorm night
-      : 'bg-gradient-to-b from-gray-700 to-slate-800'; // Thunderstorm day
+      ? 'bg-gradient-to-b from-[#1e293b] to-[#0f172a]' // Thunderstorm night
+      : 'bg-gradient-to-b from-[#475569] to-[#334155]'; // Thunderstorm day
   }
   
   if (condition.includes('snow') || condition.includes('sleet') || condition.includes('hail')) {
     return isNight
-      ? 'bg-gradient-to-b from-slate-800 to-blue-900' // Snowy night
-      : 'bg-gradient-to-b from-gray-100 to-blue-100'; // Snowy day
+      ? 'bg-gradient-to-b from-[#334155] to-[#1e293b]' // Snowy night
+      : 'bg-gradient-to-b from-[#e2e8f0] to-[#cbd5e1]'; // Snowy day
   }
   
   if (condition.includes('mist') || condition.includes('fog') || condition.includes('haze') || condition.includes('smoke')) {
     return isNight
-      ? 'bg-gradient-to-b from-gray-700 to-slate-900' // Foggy night
-      : 'bg-gradient-to-b from-gray-300 to-slate-400'; // Foggy day
+      ? 'bg-gradient-to-b from-[#475569] to-[#334155]' // Foggy night
+      : 'bg-gradient-to-b from-[#cbd5e1] to-[#94a3b8]'; // Foggy day
   }
   
   if (condition.includes('dust') || condition.includes('sand')) {
     return isNight
-      ? 'bg-gradient-to-b from-amber-900 to-stone-900' // Dusty night
-      : 'bg-gradient-to-b from-amber-200 to-yellow-100'; // Dusty day
+      ? 'bg-gradient-to-b from-[#78350f] to-[#451a03]' // Dusty night
+      : 'bg-gradient-to-b from-[#d4a276] to-[#b45309]'; // Dusty day
   }
   
   if (condition.includes('tornado')) {
     return isNight
-      ? 'bg-gradient-to-b from-slate-900 to-gray-950' // Tornado night
-      : 'bg-gradient-to-b from-slate-700 to-gray-800'; // Tornado day
+      ? 'bg-gradient-to-b from-[#1e293b] to-[#0f172a]' // Tornado night
+      : 'bg-gradient-to-b from-[#475569] to-[#334155]'; // Tornado day
   }
   
   // Default, clear sky
   return isNight
-    ? 'bg-gradient-to-b from-indigo-900 to-blue-950' // Default night
-    : 'bg-gradient-to-b from-sky-400 to-blue-300';   // Default day
+    ? 'bg-gradient-to-b from-[#0a1a33] to-[#172554]' // Default night
+    : 'bg-gradient-to-b from-[#38bdf8] to-[#0284c7]';   // Default day
 };
 
 // Map conditions to text describing the weather
