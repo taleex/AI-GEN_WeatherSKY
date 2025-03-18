@@ -1,11 +1,141 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+
+import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import Navbar from '@/components/Navbar';
+import WeatherDisplay from '@/components/WeatherDisplay';
+import LocationSearch from '@/components/LocationSearch';
+import WeatherBackground from '@/components/WeatherBackground';
+import { useWeather } from '@/hooks/useWeather';
+import { mapConditionCode } from '@/utils/iconMap';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { ArrowRight } from 'lucide-react';
 
 const Index = () => {
+  const [apiKey, setApiKey] = useState<string>(() => {
+    return localStorage.getItem('weatherApiKey') || '';
+  });
+  const [isSettingApiKey, setIsSettingApiKey] = useState<boolean>(!apiKey);
+  
+  const {
+    weatherData,
+    isLoading,
+    getCurrentLocation,
+    searchLocation,
+    selectLocation,
+  } = useWeather({ apiKey });
+  
+  const handleApiKeySubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    localStorage.setItem('weatherApiKey', apiKey);
+    setIsSettingApiKey(false);
+  };
+  
+  // Determine the current weather condition
+  const weatherCondition = weatherData?.current 
+    ? mapConditionCode(
+        weatherData.current.weather_code, 
+        weatherData.current.dt > weatherData.current.sunrise && weatherData.current.dt < weatherData.current.sunset
+      ) 
+    : 'clear-day';
+  
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold mb-4">Welcome to Your Blank App</h1>
-        <p className="text-xl text-gray-600">Start building your amazing project here!</p>
+    <div className="relative min-h-screen w-full overflow-hidden">
+      {/* Dynamic background based on weather */}
+      <WeatherBackground 
+        condition={weatherCondition}
+        sunriseTime={weatherData?.current.sunrise}
+        sunsetTime={weatherData?.current.sunset}
+      />
+      
+      {/* Semi-transparent overlay for better readability */}
+      <div className="absolute inset-0 bg-black/10 backdrop-blur-xs"></div>
+      
+      {/* Content layer */}
+      <div className="relative z-10 min-h-screen">
+        <Navbar title="Stellar Sky" />
+        
+        <AnimatePresence mode="wait">
+          {isSettingApiKey ? (
+            <motion.div 
+              key="apiKeyForm"
+              className="min-h-screen flex items-center justify-center px-6"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.5 }}
+            >
+              <motion.div 
+                className="w-full max-w-md weather-card"
+                initial={{ scale: 0.9, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ delay: 0.2, duration: 0.5 }}
+              >
+                <h2 className="text-2xl font-display font-medium text-white mb-6 text-center">
+                  Welcome to Stellar Sky
+                </h2>
+                <p className="text-white/80 mb-8 text-center">
+                  Please enter your OpenWeatherMap API key to get started. 
+                  You can get a free API key by signing up at 
+                  <a 
+                    href="https://openweathermap.org/api" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="text-blue-300 hover:text-blue-200 ml-1 underline underline-offset-2"
+                  >
+                    openweathermap.org
+                  </a>
+                </p>
+                
+                <form onSubmit={handleApiKeySubmit} className="space-y-6">
+                  <div className="space-y-2">
+                    <label htmlFor="apiKey" className="text-white/90 text-sm">
+                      API Key
+                    </label>
+                    <Input
+                      id="apiKey"
+                      type="text"
+                      value={apiKey}
+                      onChange={(e) => setApiKey(e.target.value)}
+                      placeholder="Enter your OpenWeatherMap API key"
+                      className="bg-white/20 border-white/30 text-white placeholder:text-white/50"
+                      required
+                    />
+                  </div>
+                  
+                  <Button 
+                    type="submit"
+                    className="w-full bg-white/20 hover:bg-white/30 text-white border border-white/30"
+                  >
+                    Get Started
+                    <ArrowRight className="ml-2 w-4 h-4" />
+                  </Button>
+                </form>
+              </motion.div>
+            </motion.div>
+          ) : (
+            <motion.div 
+              key="weatherDisplay"
+              className="pt-20 pb-10 min-h-screen flex flex-col"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.5 }}
+            >
+              <div className="flex justify-end px-6 mb-6">
+                <LocationSearch
+                  onSearch={searchLocation}
+                  onSelectLocation={selectLocation}
+                  onGetCurrentLocation={getCurrentLocation}
+                />
+              </div>
+              
+              {weatherData && (
+                <WeatherDisplay data={weatherData} isLoading={isLoading} />
+              )}
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </div>
   );
