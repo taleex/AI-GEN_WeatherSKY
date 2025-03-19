@@ -4,6 +4,10 @@
 
 **URL**: https://lovable.dev/projects/e90320e7-70c8-4cfc-83e4-83fac9d8957c
 
+![image](https://github.com/user-attachments/assets/5af6dcc3-c282-4304-9e15-0d03bb27ca7e)
+
+
+
 ## How can I edit this code?
 
 There are several ways of editing your application.
