@@ -7,7 +7,7 @@ import { componentTagger } from "lovable-tagger";
 export default defineConfig(({ mode }) => ({
   base: "/AI-GEN_WeatherSKY/", // Caminho base correto para GitHub Pages
   build: {
-    outDir: "docs", // Muda de 'dist' para 'docs' para o GitHub Pages encontrar
+    outDir: "docs", // Certifique-se que os arquivos de build vão para "docs"
   },
   server: {
     host: "::",
