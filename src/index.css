@@ -102,6 +102,11 @@
     @apply glass-panel rounded-xl p-4 transition-all duration-300;
   }
   
+  .weather-detail-card {
+    @apply bg-white/25 backdrop-blur-lg border border-white/30 shadow-lg 
+    hover:bg-white/30 transition-all duration-300 transform hover:scale-105;
+  }
+  
   .fade-enter {
     opacity: 0;
   }

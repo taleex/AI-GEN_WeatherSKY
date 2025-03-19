@@ -143,38 +143,38 @@ const WeatherDisplay: React.FC<WeatherDisplayProps> = ({
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5, duration: 0.5 }}
         >
-          <div className="flex flex-col items-center sm:items-start glass-panel rounded-lg p-3">
-            <div className="flex items-center text-blue-200 mb-1">
-              <Wind className="w-4 h-4 mr-1" />
-              <span className="text-xs uppercase">Wind</span>
+          <div className="flex flex-col items-center weather-detail-card rounded-lg p-3">
+            <div className="flex items-center mb-2">
+              <Wind className="w-5 h-5 text-white" />
             </div>
-            <p className="text-white text-sm">
+            <span className="text-white text-xs uppercase font-medium mb-1">Wind</span>
+            <p className="text-white text-sm font-medium">
               {formatWind(current.wind_speed, current.wind_deg)}
             </p>
           </div>
 
-          <div className="flex flex-col items-center sm:items-start glass-panel rounded-lg p-3">
-            <div className="flex items-center text-blue-200 mb-1">
-              <Droplets className="w-4 h-4 mr-1" />
-              <span className="text-xs uppercase">Humidity</span>
+          <div className="flex flex-col items-center weather-detail-card rounded-lg p-3">
+            <div className="flex items-center mb-2">
+              <Droplets className="w-5 h-5 text-white" />
             </div>
-            <p className="text-white text-sm">{current.humidity}%</p>
+            <span className="text-white text-xs uppercase font-medium mb-1">Humidity</span>
+            <p className="text-white text-sm font-medium">{current.humidity}%</p>
           </div>
 
-          <div className="flex flex-col items-center sm:items-start glass-panel rounded-lg p-3">
-            <div className="flex items-center text-blue-200 mb-1">
-              <Sunrise className="w-4 h-4 mr-1" />
-              <span className="text-xs uppercase">Sunrise</span>
+          <div className="flex flex-col items-center weather-detail-card rounded-lg p-3">
+            <div className="flex items-center mb-2">
+              <Sunrise className="w-5 h-5 text-white" />
             </div>
-            <p className="text-white text-sm">{formatTime(current.sunrise)}</p>
+            <span className="text-white text-xs uppercase font-medium mb-1">Sunrise</span>
+            <p className="text-white text-sm font-medium">{formatTime(current.sunrise)}</p>
           </div>
 
-          <div className="flex flex-col items-center sm:items-start glass-panel rounded-lg p-3">
-            <div className="flex items-center text-blue-200 mb-1">
-              <Sunset className="w-4 h-4 mr-1" />
-              <span className="text-xs uppercase">Sunset</span>
+          <div className="flex flex-col items-center weather-detail-card rounded-lg p-3">
+            <div className="flex items-center mb-2">
+              <Sunset className="w-5 h-5 text-white" />
             </div>
-            <p className="text-white text-sm">{formatTime(current.sunset)}</p>
+            <span className="text-white text-xs uppercase font-medium mb-1">Sunset</span>
+            <p className="text-white text-sm font-medium">{formatTime(current.sunset)}</p>
           </div>
         </motion.div>
       </motion.div>

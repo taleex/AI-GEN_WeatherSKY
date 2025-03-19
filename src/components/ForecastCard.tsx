@@ -32,14 +32,14 @@ const ForecastCard: React.FC<ForecastCardProps> = ({ day, index }) => {
         duration: 0.5
       }}
     >
-      <div className="text-sm font-medium text-white/90 mb-1">
+      <div className="text-sm font-medium text-white mb-1">
         {isToday ? 'Today' : formatTime(day.dt, 'day')}
       </div>
       
       <WeatherSVGIcon condition={condition} size="md" className="my-2" />
       
       <div className="flex justify-between w-full mt-2">
-        <span className="text-xs text-white/80">
+        <span className="text-xs font-medium text-white/80">
           {formatTemperature(day.temp.min)}
         </span>
         <span className="text-sm font-medium text-white">
