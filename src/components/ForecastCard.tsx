@@ -24,7 +24,7 @@ const ForecastCard: React.FC<ForecastCardProps> = ({ day, index }) => {
   
   return (
     <motion.div 
-      className="forecast-card flex flex-col items-center"
+      className="forecast-card flex flex-col items-center weather-detail-card"
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ 

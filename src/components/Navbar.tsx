@@ -1,13 +1,34 @@
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { motion } from 'framer-motion';
+import { WeatherCondition } from '@/utils/iconMap';
 
 interface NavbarProps {
   title?: string;
   children?: React.ReactNode;
+  weatherCondition?: WeatherCondition;
 }
 
-const Navbar: React.FC<NavbarProps> = ({ title = 'Weather', children }) => {
+const Navbar: React.FC<NavbarProps> = ({ 
+  title = 'WeatherSKY', 
+  children,
+  weatherCondition 
+}) => {
+  useEffect(() => {
+    if (weatherCondition) {
+      // Dispatch event to update favicon
+      const event = new CustomEvent('weather-condition-change', {
+        detail: { condition: weatherCondition }
+      });
+      window.dispatchEvent(event);
+      
+      // Update document title
+      document.title = `${title} - ${weatherCondition.split('-').map(word => 
+        word.charAt(0).toUpperCase() + word.slice(1)
+      ).join(' ')}`;
+    }
+  }, [weatherCondition, title]);
+
   return (
     <motion.nav 
       className="fixed top-0 left-0 right-0 z-50 px-6 py-4 flex items-center justify-between"
