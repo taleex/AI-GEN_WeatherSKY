@@ -78,7 +78,7 @@ const WeatherDisplay: React.FC<WeatherDisplayProps> = ({
               </div>
             </div>
             <p className="text-white/80 text-sm mt-1">
-              {formatTime(current.dt, 'full')}
+              {formatTime(current.dt, 'time')} {formatTime(current.dt, 'full')}
             </p>
           </motion.div>
 
@@ -104,7 +104,9 @@ const WeatherDisplay: React.FC<WeatherDisplayProps> = ({
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.4, duration: 0.5 }}
           >
-            <WeatherSVGIcon condition={weatherCondition} size="xl" className="mr-4" />
+            <div className="flex items-center justify-center w-24 h-24 mr-4">
+              <WeatherSVGIcon condition={weatherCondition} size="xl" className="mr-0" />
+            </div>
             <div>
               <h2 className="text-white text-xl font-medium">{conditionText}</h2>
               <p className="text-white/80 text-sm">

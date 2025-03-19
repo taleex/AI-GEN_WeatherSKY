@@ -72,7 +72,7 @@ const Index = () => {
       
       {/* Content layer */}
       <div className="relative z-10 min-h-screen">
-        <Navbar title="Stellar Sky">
+        <Navbar title="WeatherSKY" weatherCondition={weatherCondition}>
           {!isSettingApiKey && (
             <Button 
               variant="ghost" 
@@ -101,7 +101,7 @@ const Index = () => {
                 transition={{ delay: 0.2, duration: 0.5 }}
               >
                 <h2 className="text-2xl font-display font-medium text-white mb-6 text-center">
-                  Welcome to Stellar Sky
+                  Welcome to WeatherSKY
                 </h2>
                 <p className="text-white/80 mb-6 text-center">
                   Please enter your OpenWeatherMap API key to get started. 
