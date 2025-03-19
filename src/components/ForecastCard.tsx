@@ -1,8 +1,9 @@
 
 import React from 'react';
-import { WeatherCondition, mapConditionCode } from '@/utils/iconMap';
 import { formatTemperature, formatTime } from '@/utils/formatters';
+import { mapConditionCode } from '@/utils/iconMap';
 import WeatherSVGIcon from './WeatherSVGIcons';
+import { CloudRain } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 interface ForecastCardProps {
@@ -14,37 +15,43 @@ interface ForecastCardProps {
       max: number;
     };
     weather_code: number;
+    weather_description: string;
+    pop: number;
   };
   index: number;
+  timezone?: string;
 }
 
-const ForecastCard: React.FC<ForecastCardProps> = ({ day, index }) => {
-  const isToday = index === 0;
-  const condition = mapConditionCode(day.weather_code, true);
-  
+const ForecastCard = ({ day, index, timezone }: ForecastCardProps) => {
+  const weatherCondition = mapConditionCode(day.weather_code, true);
+  const hasPrecipitation = day.pop > 0.2; // Show precipitation if probability > 20%
+
   return (
     <motion.div 
-      className="forecast-card flex flex-col items-center weather-detail-card"
+      className="forecast-card"
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ 
-        delay: 0.1 * index,
-        duration: 0.5
-      }}
+      transition={{ delay: 0.1 * index, duration: 0.5 }}
     >
-      <div className="text-sm font-medium text-white mb-1">
-        {isToday ? 'Today' : formatTime(day.dt, 'day')}
+      <div className="text-center mb-1 text-xs text-white/90 font-medium">
+        {index === 0 ? 'Today' : formatTime(day.dt, 'day', timezone)}
       </div>
-      
-      <WeatherSVGIcon condition={condition} size="md" className="my-2" />
-      
-      <div className="flex justify-between w-full mt-2">
-        <span className="text-xs font-medium text-white/80">
-          {formatTemperature(day.temp.min)}
-        </span>
-        <span className="text-sm font-medium text-white">
-          {formatTemperature(day.temp.max)}
-        </span>
+      <div className="flex flex-col items-center">
+        <WeatherSVGIcon condition={weatherCondition} size="sm" />
+        <div className="text-white text-sm font-medium mt-2">
+          {formatTemperature(day.temp.day)}
+        </div>
+        <div className="flex items-center text-xs text-white/80 mt-1">
+          <span>{formatTemperature(day.temp.min)}</span>
+          <span className="mx-1">|</span>
+          <span>{formatTemperature(day.temp.max)}</span>
+        </div>
+        {hasPrecipitation && (
+          <div className="flex items-center text-xs text-blue-300 mt-2">
+            <CloudRain className="h-3 w-3 mr-1" />
+            <span>{Math.round(day.pop * 100)}%</span>
+          </div>
+        )}
       </div>
     </motion.div>
   );

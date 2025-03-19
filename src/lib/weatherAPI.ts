@@ -1,9 +1,9 @@
-
 export interface WeatherLocation {
   name: string;
   country: string;
   lat: number;
   lon: number;
+  timezone?: number;  // Timezone offset in seconds from UTC
 }
 
 export interface WeatherData {
@@ -12,6 +12,7 @@ export interface WeatherData {
     country: string;
     lat: number;
     lon: number;
+    timezone: number;  // Timezone offset in seconds from UTC
   };
   current: {
     temp: number;
@@ -93,6 +94,7 @@ export const fetchWeatherByCoords = async (
         country: currentData.sys.country,
         lat: currentData.coord.lat,
         lon: currentData.coord.lon,
+        timezone: currentData.timezone, // Add timezone offset
       },
       current: {
         temp: currentData.main.temp,

@@ -47,6 +47,12 @@ const WeatherDisplay: React.FC<WeatherDisplayProps> = ({
   const weatherCondition = mapConditionCode(current.weather_code, 
     current.dt > current.sunrise && current.dt < current.sunset);
   const conditionText = getConditionText(weatherCondition);
+  
+  // Determine timezone from coordinates
+  // OpenWeatherMap doesn't provide timezone strings, so we use a simplified approach
+  // Calculate timezone offset in hours from UTC
+  const timezoneOffsetHours = location.timezone / 3600;
+  const timezoneString = `Etc/GMT${timezoneOffsetHours >= 0 ? '-' : '+'}${Math.abs(timezoneOffsetHours)}`;
 
   return (
     <div className="weather-container flex flex-col justify-center">
@@ -78,7 +84,7 @@ const WeatherDisplay: React.FC<WeatherDisplayProps> = ({
               </div>
             </div>
             <p className="text-white/80 text-sm mt-1">
-              {formatTime(current.dt, 'time')} {formatTime(current.dt, 'full')}
+              {formatTime(current.dt, 'time', timezoneString)} {formatTime(current.dt, 'full', timezoneString)}
             </p>
           </motion.div>
 
@@ -168,7 +174,7 @@ const WeatherDisplay: React.FC<WeatherDisplayProps> = ({
               <Sunrise className="w-5 h-5 text-white" />
             </div>
             <span className="text-white text-xs uppercase font-medium mb-1">Sunrise</span>
-            <p className="text-white text-sm font-medium">{formatTime(current.sunrise)}</p>
+            <p className="text-white text-sm font-medium">{formatTime(current.sunrise, 'time', timezoneString)}</p>
           </div>
 
           <div className="flex flex-col items-center weather-detail-card rounded-lg p-3">
@@ -176,7 +182,7 @@ const WeatherDisplay: React.FC<WeatherDisplayProps> = ({
               <Sunset className="w-5 h-5 text-white" />
             </div>
             <span className="text-white text-xs uppercase font-medium mb-1">Sunset</span>
-            <p className="text-white text-sm font-medium">{formatTime(current.sunset)}</p>
+            <p className="text-white text-sm font-medium">{formatTime(current.sunset, 'time', timezoneString)}</p>
           </div>
         </motion.div>
       </motion.div>
@@ -191,7 +197,12 @@ const WeatherDisplay: React.FC<WeatherDisplayProps> = ({
         <h3 className="text-white/90 text-sm font-medium mb-3">5-Day Forecast</h3>
         <div className="grid grid-cols-5 gap-3">
           {forecast.daily.map((day, index) => (
-            <ForecastCard key={day.dt} day={day} index={index} />
+            <ForecastCard 
+              key={day.dt} 
+              day={day} 
+              index={index} 
+              timezone={timezoneString} 
+            />
           ))}
         </div>
       </motion.div>
