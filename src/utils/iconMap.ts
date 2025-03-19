@@ -113,7 +113,7 @@ export const getWeatherBackground = (condition: WeatherCondition, sunsetTime?: n
     (now.getTime() / 1000 > sunsetTime || now.getTime() / 1000 < sunriseTime) : 
     (condition.includes('night'));
 
-  // Enhanced backgrounds by condition and time of day using mint and steel blue colors
+  // Enhanced backgrounds with mint and steel blue colors
   if (condition.includes('clear')) {
     return isNight 
       ? 'bg-gradient-to-b from-[#1e2d4a] to-[#0a1e3d]' // Clear night - deep blue
@@ -147,7 +147,7 @@ export const getWeatherBackground = (condition: WeatherCondition, sunsetTime?: n
   if (condition.includes('snow') || condition.includes('sleet') || condition.includes('hail')) {
     return isNight
       ? 'bg-gradient-to-b from-[#374151] to-[#1f2937]' // Snowy night
-      : 'bg-gradient-to-b from-[#d1e0d7] to-[#cfd8dc]'; // Snowy day
+      : 'bg-gradient-to-b from-[#d1e0d7] to-[#cfd8dc]'; // Snowy day - soft mint
   }
   
   if (condition.includes('mist') || condition.includes('fog') || condition.includes('haze') || condition.includes('smoke')) {

@@ -2,7 +2,7 @@
 import React from 'react';
 import { WeatherCondition, mapConditionCode } from '@/utils/iconMap';
 import { formatTemperature, formatTime } from '@/utils/formatters';
-import WeatherIcon from './WeatherIcon';
+import WeatherSVGIcon from './WeatherSVGIcons';
 import { motion } from 'framer-motion';
 
 interface ForecastCardProps {
@@ -36,7 +36,7 @@ const ForecastCard: React.FC<ForecastCardProps> = ({ day, index }) => {
         {isToday ? 'Today' : formatTime(day.dt, 'day')}
       </div>
       
-      <WeatherIcon condition={condition} size="md" className="my-2" />
+      <WeatherSVGIcon condition={condition} size="md" className="my-2" />
       
       <div className="flex justify-between w-full mt-2">
         <span className="text-xs text-white/80">

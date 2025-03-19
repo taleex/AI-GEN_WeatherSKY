@@ -57,23 +57,25 @@ const WeatherDisplay: React.FC<WeatherDisplayProps> = ({
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
       >
-        <div className="flex flex-col md:flex-row md:justify-between items-center mb-6">
+        <div className="flex flex-col md:flex-row md:justify-between items-center mb-4">
           <motion.div 
-            className="flex items-center mb-4 md:mb-0"
+            className="flex flex-col items-center md:items-start mb-2 md:mb-0"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.2, duration: 0.5 }}
           >
-            <div className="flex flex-col md:flex-row items-center md:items-start">
-              <h1 className="text-2xl md:text-3xl font-display font-medium text-white mr-3">
+            <div className="flex items-center">
+              <h1 className="text-2xl md:text-3xl font-display font-medium text-white">
                 {location.name}
               </h1>
-              <LocationSearch 
-                onSearch={onSearch}
-                onSelectLocation={onSelectLocation}
-                onGetCurrentLocation={onGetCurrentLocation}
-                isInHeader={true}
-              />
+              <div className="ml-3">
+                <LocationSearch 
+                  onSearch={onSearch}
+                  onSelectLocation={onSelectLocation}
+                  onGetCurrentLocation={onGetCurrentLocation}
+                  isInHeader={true}
+                />
+              </div>
             </div>
             <p className="text-white/80 text-sm mt-1">
               {formatTime(current.dt, 'full')}

@@ -95,7 +95,7 @@ const LocationSearch: React.FC<LocationSearchProps> = ({
   }, [isExpanded]);
 
   const buttonClasses = isInHeader 
-    ? "flex items-center justify-center w-10 h-10 rounded-full bg-white/10 backdrop-blur-sm text-white hover:bg-white/20 transition-all"
+    ? "flex items-center justify-center w-8 h-8 rounded-full bg-white/10 backdrop-blur-sm text-white hover:bg-white/20 transition-all"
     : "flex items-center justify-center w-10 h-10 rounded-full bg-white/20 backdrop-blur-md text-white hover:bg-white/30 transition-all";
 
   return (
@@ -113,7 +113,7 @@ const LocationSearch: React.FC<LocationSearchProps> = ({
           whileTap={{ scale: 0.95 }}
           onClick={() => setIsExpanded(true)}
         >
-          <Search className="w-5 h-5" />
+          <Search className="w-4 h-4" />
         </motion.button>
       ) : (
         <motion.div
