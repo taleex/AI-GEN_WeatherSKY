@@ -5,17 +5,14 @@ import { componentTagger } from "lovable-tagger";
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
-  base: "/AI-GEN_WeatherSKY/", // Caminho base correto para GitHub Pages
-  build: {
-    outDir: "docs", // Certifique-se que os arquivos de build vão para "docs"
-  },
   server: {
     host: "::",
     port: 8080,
   },
   plugins: [
     react(),
-    mode === "development" && componentTagger(),
+    mode === 'development' &&
+    componentTagger(),
   ].filter(Boolean),
   resolve: {
     alias: {
