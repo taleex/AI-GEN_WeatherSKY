@@ -91,7 +91,7 @@
   }
   
   .weather-container {
-    @apply max-w-3xl mx-auto w-full px-6 py-8 sm:px-8 sm:py-10;
+    @apply w-full px-6 py-8 sm:px-8 sm:py-10;
   }
   
   .weather-card {
@@ -99,12 +99,28 @@
   }
   
   .forecast-card {
-    @apply glass-panel rounded-xl p-4 transition-all duration-300;
+    @apply glass-panel rounded-xl p-4 transition-all duration-300 hover:scale-105;
+  }
+  
+  .hourly-forecast-card {
+    @apply bg-white/90 backdrop-blur-md shadow-lg rounded-2xl p-4 transition-all duration-300;
+  }
+  
+  .daily-forecast-card {
+    @apply bg-white/90 backdrop-blur-md shadow-lg rounded-2xl p-4 transition-all duration-300;
   }
   
   .weather-detail-card {
     @apply bg-white/25 backdrop-blur-lg border border-white/30 shadow-lg 
     hover:bg-white/30 transition-all duration-300 transform hover:scale-105;
+  }
+  
+  .main-weather-card {
+    @apply bg-white/90 backdrop-blur-md shadow-lg rounded-3xl overflow-hidden;
+  }
+  
+  .weather-showcase {
+    @apply rounded-2xl overflow-hidden shadow-lg;
   }
   
   .fade-enter {

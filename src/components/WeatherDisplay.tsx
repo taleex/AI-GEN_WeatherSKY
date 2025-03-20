@@ -5,9 +5,10 @@ import { formatTemperature, formatTime, formatWind, capitalizeWords } from '@/ut
 import { mapConditionCode, getConditionText } from '@/utils/iconMap';
 import ForecastCard from './ForecastCard';
 import WeatherSVGIcon from './WeatherSVGIcons';
-import { Droplets, Thermometer, Wind, Sunrise, Sunset, ArrowDown } from 'lucide-react';
+import { Droplets, Thermometer, Wind, Sunrise, Sunset, ArrowDown, MapPin, CloudRain } from 'lucide-react';
 import { motion } from 'framer-motion';
 import LocationSearch from './LocationSearch';
+import HourlyForecast from './HourlyForecast';
 
 interface WeatherDisplayProps {
   data: WeatherData;
@@ -48,162 +49,193 @@ const WeatherDisplay: React.FC<WeatherDisplayProps> = ({
     current.dt > current.sunrise && current.dt < current.sunset);
   const conditionText = getConditionText(weatherCondition);
   
-  // Determine timezone from coordinates
-  // OpenWeatherMap doesn't provide timezone strings, so we use a simplified approach
   // Calculate timezone offset in hours from UTC
   const timezoneOffsetHours = location.timezone / 3600;
   const timezoneString = `Etc/GMT${timezoneOffsetHours >= 0 ? '-' : '+'}${Math.abs(timezoneOffsetHours)}`;
 
+  // Create a style object for the right weather card that has a background image
+  const weatherCardStyle = {
+    backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.1)), url('/lovable-uploads/2b0c0778-4f66-4ec4-8028-2cfb894a3d88.png')`,
+    backgroundSize: 'cover',
+    backgroundPosition: 'center',
+  };
+
   return (
-    <div className="weather-container flex flex-col justify-center">
-      {/* Current Weather */}
+    <div className="max-w-7xl mx-auto w-full px-4 md:px-6 lg:px-8 flex flex-col items-center">
+      
+      {/* Search bar at the top */}
       <motion.div 
-        className="weather-card mb-6"
-        initial={{ opacity: 0, y: 20 }}
+        className="w-full max-w-lg mb-6"
+        initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
       >
-        <div className="flex flex-col md:flex-row md:justify-between items-center mb-4">
-          <motion.div 
-            className="flex flex-col items-center md:items-start mb-2 md:mb-0"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.2, duration: 0.5 }}
-          >
-            <div className="flex items-center">
-              <h1 className="text-2xl md:text-3xl font-display font-medium text-white">
-                {location.name}
-              </h1>
-              <div className="ml-3">
-                <LocationSearch 
-                  onSearch={onSearch}
-                  onSelectLocation={onSelectLocation}
-                  onGetCurrentLocation={onGetCurrentLocation}
-                  isInHeader={true}
-                />
+        <LocationSearch 
+          onSearch={onSearch}
+          onSelectLocation={onSelectLocation}
+          onGetCurrentLocation={onGetCurrentLocation}
+          isInHeader={false}
+        />
+      </motion.div>
+      
+      {/* Main weather display - 2 cards layout */}
+      <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+        {/* Left card - weather info */}
+        <motion.div 
+          className="main-weather-card p-8"
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.5 }}
+        >
+          <div className="flex flex-col h-full">
+            <div className="flex justify-between items-start mb-4">
+              <div>
+                <div className="flex items-center">
+                  <MapPin className="w-5 h-5 text-gray-700 mr-2" />
+                  <h1 className="text-3xl font-bold text-gray-900">{location.name}</h1>
+                </div>
+                <p className="text-gray-500">
+                  {formatTime(current.dt, 'time', timezoneString)} {formatTime(current.dt, 'full', timezoneString)}
+                </p>
+              </div>
+              
+              <div className="text-right">
+                <p className="text-gray-500 text-sm">Feels like</p>
+                <p className="text-gray-800 font-medium">
+                  {formatTemperature(current.feels_like)}
+                </p>
               </div>
             </div>
-            <p className="text-white/80 text-sm mt-1">
-              {formatTime(current.dt, 'time', timezoneString)} {formatTime(current.dt, 'full', timezoneString)}
-            </p>
-          </motion.div>
-
-          <motion.div 
-            className="flex items-center"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.3, duration: 0.5 }}
-          >
-            <div className="text-right">
-              <p className="text-white/90 text-sm font-medium">Feels like</p>
-              <p className="text-white text-lg">
-                {formatTemperature(current.feels_like)}
-              </p>
+            
+            <div className="flex items-center justify-between mb-6">
+              <div className="flex flex-col items-start">
+                <h2 className="text-7xl font-light text-gray-900">
+                  {formatTemperature(current.temp, false)}
+                </h2>
+                <div className="flex items-center text-sm text-gray-500 mt-1">
+                  <span className="flex items-center mr-4">
+                    <ArrowDown className="w-3 h-3 mr-1 text-blue-500 transform rotate-180" />
+                    High: {formatTemperature(current.temp_max)}
+                  </span>
+                  <span className="flex items-center">
+                    <ArrowDown className="w-3 h-3 mr-1 text-blue-500" />
+                    Low: {formatTemperature(current.temp_min)}
+                  </span>
+                </div>
+              </div>
+              
+              <div className="flex flex-col items-center">
+                <WeatherSVGIcon condition={weatherCondition} size="xl" />
+                <p className="text-gray-800 font-medium mt-2">{conditionText}</p>
+                <p className="text-gray-500 text-sm">
+                  {capitalizeWords(current.weather_description)}
+                </p>
+              </div>
             </div>
-          </motion.div>
-        </div>
-
-        <div className="flex flex-col md:flex-row items-center justify-between">
-          <motion.div 
-            className="flex items-center mb-4 md:mb-0"
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.4, duration: 0.5 }}
-          >
-            <div className="flex items-center justify-center w-24 h-24 mr-4">
-              <WeatherSVGIcon condition={weatherCondition} size="xl" className="mr-0" />
+            
+            {/* Weather Details in 2x2 grid */}
+            <div className="grid grid-cols-2 gap-4 mt-auto">
+              <div className="bg-gray-100 rounded-lg p-3 flex items-center">
+                <Wind className="w-8 h-8 text-gray-600 mr-3" />
+                <div>
+                  <p className="text-xs font-medium text-gray-500">Wind</p>
+                  <p className="text-gray-800 font-medium">
+                    {formatWind(current.wind_speed, current.wind_deg)}
+                  </p>
+                </div>
+              </div>
+              
+              <div className="bg-gray-100 rounded-lg p-3 flex items-center">
+                <Droplets className="w-8 h-8 text-gray-600 mr-3" />
+                <div>
+                  <p className="text-xs font-medium text-gray-500">Humidity</p>
+                  <p className="text-gray-800 font-medium">{current.humidity}%</p>
+                </div>
+              </div>
+              
+              <div className="bg-gray-100 rounded-lg p-3 flex items-center">
+                <Sunrise className="w-8 h-8 text-gray-600 mr-3" />
+                <div>
+                  <p className="text-xs font-medium text-gray-500">Sunrise</p>
+                  <p className="text-gray-800 font-medium">{formatTime(current.sunrise, 'time', timezoneString)}</p>
+                </div>
+              </div>
+              
+              <div className="bg-gray-100 rounded-lg p-3 flex items-center">
+                <Sunset className="w-8 h-8 text-gray-600 mr-3" />
+                <div>
+                  <p className="text-xs font-medium text-gray-500">Sunset</p>
+                  <p className="text-gray-800 font-medium">{formatTime(current.sunset, 'time', timezoneString)}</p>
+                </div>
+              </div>
             </div>
-            <div>
-              <h2 className="text-white text-xl font-medium">{conditionText}</h2>
-              <p className="text-white/80 text-sm">
-                {capitalizeWords(current.weather_description)}
-              </p>
-            </div>
-          </motion.div>
-
-          <motion.div 
-            className="text-center md:text-right"
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.4, duration: 0.5 }}
-          >
-            <h2 className="text-white text-5xl md:text-6xl font-display font-light">
-              {formatTemperature(current.temp)}
-            </h2>
-            <div className="flex items-center justify-center md:justify-end text-sm mt-1 text-white/80">
-              <span className="flex items-center">
-                <ArrowDown className="w-3 h-3 mr-1 text-blue-300" />
-                {formatTemperature(current.temp_min)}
-              </span>
-              <span className="mx-2">|</span>
-              <span className="flex items-center">
-                <ArrowDown className="w-3 h-3 mr-1 text-blue-300 transform rotate-180" />
-                {formatTemperature(current.temp_max)}
-              </span>
-            </div>
-          </motion.div>
-        </div>
-
-        {/* Weather Details */}
-        <motion.div 
-          className="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-8"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.5, duration: 0.5 }}
-        >
-          <div className="flex flex-col items-center weather-detail-card rounded-lg p-3">
-            <div className="flex items-center mb-2">
-              <Wind className="w-5 h-5 text-white" />
-            </div>
-            <span className="text-white text-xs uppercase font-medium mb-1">Wind</span>
-            <p className="text-white text-sm font-medium">
-              {formatWind(current.wind_speed, current.wind_deg)}
-            </p>
-          </div>
-
-          <div className="flex flex-col items-center weather-detail-card rounded-lg p-3">
-            <div className="flex items-center mb-2">
-              <Droplets className="w-5 h-5 text-white" />
-            </div>
-            <span className="text-white text-xs uppercase font-medium mb-1">Humidity</span>
-            <p className="text-white text-sm font-medium">{current.humidity}%</p>
-          </div>
-
-          <div className="flex flex-col items-center weather-detail-card rounded-lg p-3">
-            <div className="flex items-center mb-2">
-              <Sunrise className="w-5 h-5 text-white" />
-            </div>
-            <span className="text-white text-xs uppercase font-medium mb-1">Sunrise</span>
-            <p className="text-white text-sm font-medium">{formatTime(current.sunrise, 'time', timezoneString)}</p>
-          </div>
-
-          <div className="flex flex-col items-center weather-detail-card rounded-lg p-3">
-            <div className="flex items-center mb-2">
-              <Sunset className="w-5 h-5 text-white" />
-            </div>
-            <span className="text-white text-xs uppercase font-medium mb-1">Sunset</span>
-            <p className="text-white text-sm font-medium">{formatTime(current.sunset, 'time', timezoneString)}</p>
           </div>
         </motion.div>
-      </motion.div>
-
-      {/* Forecast */}
+        
+        {/* Right card - weather showcase */}
+        <motion.div 
+          className="weather-showcase flex"
+          initial={{ opacity: 0, x: 20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.5 }}
+          style={weatherCardStyle}
+        >
+          <div className="p-8 w-full h-full flex flex-col justify-between">
+            <div>
+              <h2 className="text-4xl font-bold text-white">
+                {location.name}
+              </h2>
+              <p className="text-white/80">Chance of Rain: {Math.round(current.clouds)}%</p>
+            </div>
+            
+            <div className="flex items-center justify-center flex-grow py-8">
+              <h3 className="text-8xl font-bold text-white flex items-start">
+                {formatTemperature(current.temp, false)}
+                <span className="text-4xl mt-2">°</span>
+              </h3>
+            </div>
+            
+            <div className="grid grid-cols-3 gap-4">
+              {forecast.hourly.slice(0, 3).map((hour, index) => (
+                <div key={hour.dt} className="flex flex-col items-center">
+                  <WeatherSVGIcon 
+                    condition={mapConditionCode(hour.weather_code, true)} 
+                    size="sm"
+                    className="text-white mb-1"
+                  />
+                  <p className="text-white/90 text-xs">
+                    {formatTime(hour.dt, 'hour', timezoneString)}
+                  </p>
+                  <p className="text-white font-medium">{Math.round(hour.temp)}°</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </motion.div>
+      </div>
+      
+      {/* Hourly forecast */}
+      <HourlyForecast hourlyData={forecast.hourly} timezone={timezoneString} />
+      
+      {/* 5-Day forecast */}
       <motion.div
-        className="mb-4"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.6, duration: 0.5 }}
+        className="w-full mt-6"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.3, duration: 0.5 }}
       >
-        <h3 className="text-white/90 text-sm font-medium mb-3">5-Day Forecast</h3>
-        <div className="grid grid-cols-5 gap-3">
-          {forecast.daily.map((day, index) => (
-            <ForecastCard 
-              key={day.dt} 
-              day={day} 
-              index={index} 
-              timezone={timezoneString} 
-            />
-          ))}
+        <h3 className="text-gray-700 font-medium mb-3">5-Day Forecast</h3>
+        <div className="daily-forecast-card">
+          <div className="grid grid-cols-5 gap-3">
+            {forecast.daily.map((day, index) => (
+              <ForecastCard 
+                key={day.dt} 
+                day={day} 
+                index={index} 
+                timezone={timezoneString} 
+              />
+            ))}
+          </div>
         </div>
       </motion.div>
     </div>

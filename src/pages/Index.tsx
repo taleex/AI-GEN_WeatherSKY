@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Navbar from '@/components/Navbar';
 import WeatherDisplay from '@/components/WeatherDisplay';
@@ -153,7 +153,7 @@ const Index = () => {
           ) : (
             <motion.div 
               key="weatherDisplay"
-              className="pt-20 pb-10 min-h-screen flex flex-col"
+              className="pt-14 pb-10 min-h-screen flex flex-col"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
